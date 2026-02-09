@@ -1,0 +1,264 @@
+<?php exit(); // DO NOT DELETE THIS LINE
+/**
+ * config.inc.php
+ *
+ * OJS 3.5 configuration for ojs.genes.kz (journal Contig)
+ * Based on config.TEMPLATE.inc.php from PKP/OJS.
+ *
+ * Copy this file to the OJS root as config.inc.php and fill in
+ * all __PLACEHOLDER__ values before running the web installer.
+ *
+ * See https://github.com/pkp/ojs/blob/stable-3_5_0/config.TEMPLATE.inc.php
+ * for the full reference with all available options.
+ */
+
+;;;;;;;;;;;;;;;;;;
+; General Settings
+;;;;;;;;;;;;;;;;;;
+
+[general]
+
+installed = Off
+
+base_url = "https://ojs.genes.kz"
+
+session_cookie_name = OJSSID
+session_cookie_path = /
+session_lifetime = 30
+
+; Казахстан, UTC+5
+time_zone = "Asia/Almaty"
+
+date_format_short = "%Y-%m-%d"
+date_format_long = "%B %e, %Y"
+datetime_format_short = "%Y-%m-%d %I:%M %p"
+datetime_format_long = "%B %e, %Y - %I:%M %p"
+
+; Clean URLs (requires .htaccess rewrite rules)
+restful_urls = On
+
+; Allow envelope sender in outgoing mail (may require server config)
+allow_envelope_sender = Off
+
+; Show the "powered by OJS" link in the footer
+show_stats_link = On
+
+; Sandbox mode — set Off for production
+sandbox = Off
+
+;;;;;;;;;;;;;;;;;
+; Database Settings
+;;;;;;;;;;;;;;;;;
+
+[database]
+
+driver = mysqli
+host = localhost
+username = __DB_USERNAME__
+password = __DB_PASSWORD__
+name = __DB_NAME__
+
+; Uncomment if MariaDB runs on a non-default port
+; port = 3306
+
+; Use persistent connections (usually Off on shared hosting)
+persistent = Off
+
+; Database collation — use utf8_general_ci to avoid OJS 3.5 utf8mb3 bug
+; See https://github.com/pkp/pkp-lib/issues/11563
+collation = utf8_general_ci
+
+; Enable database debug output (Off for production)
+debug = Off
+
+;;;;;;;;;;;;;;;;;
+; Security Settings
+;;;;;;;;;;;;;;;;;
+
+[security]
+
+; Encryption cipher for app_key
+cipher = aes-256-cbc
+
+; Force HTTPS — enable after confirming SSL works
+force_ssl = On
+
+; Validate user IP against session to prevent session hijacking
+session_check_ip = On
+
+; Encryption algorithm for passwords
+encryption = sha256
+
+; Salt for hashing — generate a random 32+ char string
+salt = "__SALT__"
+
+; API key secret — generate a random 32+ char string
+api_key_secret = "__API_KEY_SECRET__"
+
+; Allowed HTML tags in user-submitted content
+allowed_html = "<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd> <b> <i> <u> <img> <sup> <sub> <br> <p>"
+
+;;;;;;;;;;;;;;;;;;
+; File Settings
+;;;;;;;;;;;;;;;;;;
+
+[files]
+
+; Private files directory — MUST be outside the web root
+files_dir = /var/www/vhosts/genes.kz/ojs_files
+
+; Public files directory (relative to OJS base)
+public_files_dir = public
+
+; File permission mask
+umask = 0022
+
+;;;;;;;;;;;;;;;;;
+; Email Settings
+;;;;;;;;;;;;;;;;;
+
+[email]
+
+; Transport: smtp, sendmail, log, or PHPMailer default
+default = smtp
+
+; SMTP server settings — configure after installation in OJS admin panel
+; or fill in here:
+smtp_server = __SMTP_SERVER__
+smtp_port = 587
+
+; SMTP auth: ssl, tls, or empty
+smtp_auth = tls
+smtp_username = __SMTP_USERNAME__
+smtp_password = __SMTP_PASSWORD__
+
+; Sender address for system emails
+; envelope_sender = contig@genes.kz
+
+; DMARC compliance — use this if your mail domain has strict DMARC
+; dmarc_compliant_from = Off
+
+; Maximum number of recipients per email (0 = unlimited)
+max_recipients = 50
+
+; Time between emails (seconds) — prevent rate limiting
+time_between_emails = 1
+
+;;;;;;;;;;;;;;;;;;;
+; Queue / Job Settings
+;;;;;;;;;;;;;;;;;;;
+
+[queues]
+
+; Queue connection: database, redis, sync
+default_connection = database
+default_queue = queue
+
+; Built-in job runner — processes jobs at end of each web request
+; Essential when exec/proc_open/shell_exec are disabled
+job_runner = On
+
+; Limits per request cycle
+job_runner_max_jobs = 30
+job_runner_max_execution_time = 30
+job_runner_max_memory = 80
+
+;;;;;;;;;;;;;;;;;;;;;;
+; Scheduled Tasks
+;;;;;;;;;;;;;;;;;;;;;;
+
+[schedule]
+
+; Built-in task runner — processes scheduled tasks during web requests
+; Replaces the Acron plugin from OJS 3.4
+task_runner = On
+
+; Email notifications about failed tasks
+; scheduled_tasks_report = Off
+; scheduled_tasks_report_from = __FROM_EMAIL__
+; scheduled_tasks_report_to = __ADMIN_EMAIL__
+
+;;;;;;;;;;;;;;;
+; Cache Settings
+;;;;;;;;;;;;;;;
+
+[cache]
+
+; Cache mode: file, memcache, or none
+cache = file
+
+; Web-based cache — enables client-side caching headers
+web_cache = On
+web_cache_hours = 1
+
+;;;;;;;;;;;;;;
+; Search Settings
+;;;;;;;;;;;;;;
+
+[search]
+
+; Minimum and maximum keyword length for indexing
+min_word_length = 3
+max_word_length = 40
+
+; Number of search results per page
+results_per_keyword = 500
+
+; Total results across all keywords
+num_keywords_to_search_by = 40
+
+;;;;;;;;;;;;;;;;;;
+; OAI Settings
+;;;;;;;;;;;;;;;;;;
+
+[oai]
+
+; OAI repository identifier
+repository_id = "ojs.genes.kz"
+
+; Enable OAI-PMH interface
+oai = On
+
+;;;;;;;;;;;;;;;;;
+; Interface Settings
+;;;;;;;;;;;;;;;;;
+
+[interface]
+
+items_per_page = 25
+page_links = 10
+
+;;;;;;;;;;;;;;;;;;;;
+; Captcha / ALTCHA
+;;;;;;;;;;;;;;;;;;;;
+
+[captcha]
+
+; Use reCaptcha (requires keys from Google)
+; recaptcha = Off
+; recaptcha_public_key = ""
+; recaptcha_private_key = ""
+
+; ALTCHA — open-source alternative (no external service needed)
+; altcha = Off
+
+;;;;;;;;;;;;
+; Debug
+;;;;;;;;;;;;
+
+[debug]
+
+show_stacktrace = Off
+deprecation_warnings = Off
+
+; API request logging
+; api_log_file = /var/www/vhosts/genes.kz/ojs_files/api.log
+
+;;;;;;;;;;;;;;;;;;;;;;;
+; External Commands
+;;;;;;;;;;;;;;;;;;;;;;;
+
+; These require exec() which is DISABLED on hoster.kz
+; PDF full-text indexing will not work
+; [cli]
+; pdftotext = /usr/bin/pdftotext

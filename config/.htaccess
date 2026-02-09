@@ -1,0 +1,72 @@
+# ==============================================
+# OJS 3.5 — .htaccess for LiteSpeed / Apache
+# genes.kz
+# ==============================================
+
+# Prevent directory listing
+Options -Indexes
+
+# Block access to sensitive files
+<FilesMatch "(?i)(^\.ht|config\.inc\.php|composer\.(json|lock)|package\.json|\.env)">
+    Require all denied
+</FilesMatch>
+
+# ---- URL Rewriting ----
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Uncomment if OJS is in a subdirectory:
+    # RewriteBase /ojs/
+
+    # Block direct access to internal directories
+    RewriteRule ^lib/ - [F,L]
+    RewriteRule ^classes/ - [F,L]
+    RewriteRule ^templates/ - [F,L]
+    RewriteRule ^locale/ - [F,L]
+    RewriteRule ^dbscripts/ - [F,L]
+    RewriteRule ^docs/ - [F,L]
+    RewriteRule ^tests/ - [F,L]
+    RewriteRule ^tools/ - [F,L]
+    RewriteRule ^registry/ - [F,L]
+
+    # RESTful URL routing
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [QSA,L]
+</IfModule>
+
+# ---- Security Headers ----
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ---- Compression ----
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE application/xml application/rss+xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ---- Static Asset Caching ----
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# ---- LiteSpeed-specific ----
+<IfModule LiteSpeed>
+    # Prevent timeout on large file uploads
+    RewriteRule .* - [E=noabort:1]
+    RewriteRule .* - [E=noconntimeout:1]
+</IfModule>
